@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import polars as pl
+from matplotlib.ticker import MaxNLocator
 
 PROMINENT_FAMILIES = {
     "Eos": 221,
@@ -103,4 +104,48 @@ def plot_clusters(df: pl.DataFrame, threshold=10, title="Clustering"):
     ax.set_xlabel("semimajor_axis")
     ax.set_ylabel("sin_inclination")
     ax.set_title(title)
+    plt.show()
+
+
+def plot_parameter_sweep(sweep_df: pl.DataFrame, title: str):
+    right_color = "seagreen"
+
+    _, ax1 = plt.subplots(figsize=(8, 5))
+
+    ax1.plot(
+        sweep_df["distance"],
+        sweep_df["complete"],
+        label="Complete",
+        marker="s",
+        color="steelblue",
+    )
+    ax1.plot(
+        sweep_df["distance"],
+        sweep_df["complete_and_pure"],
+        label="Complete & Pure",
+        marker="o",
+        color="darkorange",
+    )
+
+    ax1.yaxis.set_major_locator(MaxNLocator(integer=True))
+    ax1.set_xlabel("Distance Threshold")
+    ax1.set_ylabel("Count")
+    ax1.legend(loc="upper left")
+
+    ax2 = ax1.twinx()
+    ax2.plot(
+        sweep_df["distance"],
+        sweep_df["avg_purity_complete"],
+        label="Avg Purity of Complete Clusters",
+        marker="^",
+        color=right_color,
+        linestyle="--",
+    )
+    ax2.set_ylabel("Cluster Purity (%)", color=right_color)
+    ax2.tick_params(axis="y", colors=right_color)
+    ax2.spines["right"].set_color(right_color)
+    ax2.legend(loc="upper right")
+
+    plt.title(title)
+    plt.tight_layout()
     plt.show()
