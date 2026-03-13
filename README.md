@@ -69,7 +69,7 @@ table below:
 | 5      | all                 | 3.278 - 3.700        |
 | 6      | all                 | 3.700 - 4.000        |
 
-## Hierarchical Clustering
+### Hierarchical Clustering
 
 Hierarchical clustering is then performed on each zone, using Scikit-learn's
 [AgglomerativeClustering](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html).
