@@ -1,3 +1,7 @@
+"""
+Plotting functions for visualizing asteroid families and clustering results
+"""
+
 import matplotlib.pyplot as plt
 import polars as pl
 from matplotlib.ticker import MaxNLocator
@@ -16,6 +20,15 @@ PROMINENT_FAMILIES = {
 
 
 def plot_prominent(df: pl.DataFrame, x_ax="semimajor_axis", y_ax="sin_inclination"):
+    """
+    Plot prominent families in colors with other asteroids in grey
+
+    Args:
+        df (pl.DataFrame): The DataFrame containing asteroid data, expects result from
+            utils.load_full() or utils.filter_by_zone().
+        x_ax (str): The column name to use for the x-axis. Defaults to "semimajor_axis".
+        y_ax (str): The column name to use for the y-axis. Defaults to "sin_inclination".
+    """
     non_prom = df.filter(~pl.col("family_1").is_in(PROMINENT_FAMILIES.values()))
     prom = df.filter(pl.col("family_1").is_in(PROMINENT_FAMILIES.values()))
 
@@ -44,9 +57,21 @@ def plot_all_families(
     df: pl.DataFrame,
     x_ax="semimajor_axis",
     y_ax="sin_inclination",
-    ax=None,
     title="All Families",
+    ax=None,
 ):
+    """
+    Plot all families in colors with background asteroids in grey.
+
+    Args:
+        df (pl.DataFrame): The DataFrame containing asteroid data, expects result from
+            utils.load_full() or utils.filter_by_zone().
+        x_ax (str): The column name to use for the x-axis. Defaults to "semimajor_axis".
+        y_ax (str): The column name to use for the y-axis. Defaults to "sin_inclination".
+        title (str): The title for the plot. Defaults to "All Families".
+        ax (matplotlib.axes.Axes, optional): The axes object to plot on, used for
+            plotting as a subplot. If None, a new figure will be created.
+    """
     background = df.filter(pl.col("family_1") == 0)
 
     created_fig = ax is None
@@ -79,6 +104,19 @@ def plot_all_families(
 
 
 def plot_clusters(df: pl.DataFrame, threshold=10, title="Clustering", ax=None):
+    """
+    Plot clusters found with hierarchical clustering in color, clusters under threshold
+    size (defaults to 10) are plotted in grey.
+
+    Args:
+        df (pl.DataFrame): The DataFrame containing asteroid data, expects result from
+            clustering.hierarchical_cluster_zone().
+        threshold (int): The minimum cluster size to be colored, smaller clusters will
+            be plotted in grey. Defaults to 10.
+        title (str): The title for the plot. Defaults to "Clustering".
+        ax (matplotlib.axes.Axes, optional): The axes object to plot on, used for
+            plotting as a subplot. If None, a new figure will be created.
+    """
     created_fig = ax is None
     if ax is None:
         _, ax = plt.subplots(figsize=(7, 6))
@@ -123,9 +161,16 @@ def plot_clusters(df: pl.DataFrame, threshold=10, title="Clustering", ax=None):
         plt.show()
 
 
-def plot_complete_clusters(
-    complete_df: pl.DataFrame,
-):
+def plot_complete_clusters(complete_df: pl.DataFrame):
+    """
+    Plot all complete clusters in color and all other asteroids in grey. Used in
+    clustering.find_all_complete_clusters().
+
+    Args:
+        complete_df (pl.DataFrame): The DataFrame containing asteroid data with a
+            "complete_family" column indicating the complete cluster id, or 0 for other
+            asteroids.
+    """
     _, ax = plt.subplots(figsize=(12, 7))
 
     background = complete_df.filter(pl.col("complete_family") == 0)
@@ -165,6 +210,15 @@ def plot_complete_clusters(
 
 
 def plot_parameter_sweep(sweep_df: pl.DataFrame, title: str):
+    """
+    Plot the results of a parameter sweep, showing the number of complete clusters,
+    the number of complete and pure clusters, and the average purity of complete
+    clusters at each distance threshold. Used in clustering.param_sweep()
+
+    Args:
+        sweep_df (pl.DataFrame): A DataFrame containing the results of the parameter sweep
+        title (str): The title for the plot.
+    """
     right_color = "seagreen"
 
     _, ax1 = plt.subplots(figsize=(8, 5))

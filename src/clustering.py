@@ -91,8 +91,8 @@ def clustering_comparison(zone, inc, distance_threshold):
 
     plotting.plot_all_families(
         zone_df,
-        ax=ax1,
         title=f"Zone {zone} {inc.capitalize()} Actual Families",
+        ax=ax1,
     )
     plotting.plot_clusters(
         clusters,
