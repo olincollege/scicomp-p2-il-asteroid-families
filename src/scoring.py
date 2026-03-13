@@ -1,3 +1,7 @@
+"""
+Methods for evaluating the quality of clusters produced by the clustering algorithms
+"""
+
 import polars as pl
 
 
