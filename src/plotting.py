@@ -40,10 +40,19 @@ def plot_prominent(df: pl.DataFrame, x_ax="semimajor_axis", y_ax="sin_inclinatio
     plt.show()
 
 
-def plot_all_families(df: pl.DataFrame, x_ax="semimajor_axis", y_ax="sin_inclination"):
+def plot_all_families(
+    df: pl.DataFrame,
+    x_ax="semimajor_axis",
+    y_ax="sin_inclination",
+    ax=None,
+    title="All Families",
+):
     background = df.filter(pl.col("family_1") == 0)
 
-    _, ax = plt.subplots(figsize=(7, 6))
+    created_fig = ax is None
+    if ax is None:
+        _, ax = plt.subplots(figsize=(7, 6))
+
     ax.scatter(
         background[x_ax],
         background[y_ax],
@@ -61,13 +70,18 @@ def plot_all_families(df: pl.DataFrame, x_ax="semimajor_axis", y_ax="sin_inclina
             s=0.1,
             label=f"Family {fam}",
         )
-    plt.xlabel(x_ax)
-    plt.ylabel(y_ax)
-    plt.show()
+    ax.set_xlabel(x_ax)
+    ax.set_ylabel(y_ax)
+    ax.set_title(title)
+
+    if created_fig:
+        plt.show()
 
 
-def plot_clusters(df: pl.DataFrame, threshold=10, title="Clustering"):
-    _, ax = plt.subplots(figsize=(7, 6))
+def plot_clusters(df: pl.DataFrame, threshold=10, title="Clustering", ax=None):
+    created_fig = ax is None
+    if ax is None:
+        _, ax = plt.subplots(figsize=(7, 6))
 
     # Count members in each cluster
     clust_counts = df["hierarchical_cluster"].value_counts()
@@ -104,6 +118,49 @@ def plot_clusters(df: pl.DataFrame, threshold=10, title="Clustering"):
     ax.set_xlabel("semimajor_axis")
     ax.set_ylabel("sin_inclination")
     ax.set_title(title)
+
+    if created_fig:
+        plt.show()
+
+
+def plot_complete_clusters(
+    complete_df: pl.DataFrame,
+):
+    _, ax = plt.subplots(figsize=(12, 7))
+
+    background = complete_df.filter(pl.col("complete_family") == 0)
+    ax.scatter(
+        background["semimajor_axis"],
+        background["sin_inclination"],
+        s=0.1,
+        color="lightgrey",
+        alpha=0.5,
+    )
+
+    families = sorted(
+        complete_df.filter(pl.col("complete_family") != 0)["complete_family"]
+        .unique()
+        .to_list()
+    )
+    colors = [plt.get_cmap("tab20")(i) for i in range(20)] + [
+        plt.get_cmap("Dark2")(i) for i in range(20)
+    ]
+    for i, fam in enumerate(families):
+        fam_data = complete_df.filter(pl.col("complete_family") == fam)
+        ax.scatter(
+            fam_data["semimajor_axis"],
+            fam_data["sin_inclination"],
+            s=0.1,
+            color=colors[i],
+            label=f"Family {fam}",
+        )
+
+    ax.set_xlabel("semimajor_axis")
+    ax.set_ylabel("sin_inclination")
+    ax.set_title("All Complete Clusters Found")
+    ax.legend(loc="upper right", markerscale=10, fontsize="xx-small", ncol=2)
+
+    plt.tight_layout()
     plt.show()
 
 
