@@ -1,8 +1,4 @@
-import numpy as np
 import polars as pl
-
-import clustering
-import plotting
 
 
 def clustering_summary(
@@ -104,35 +100,3 @@ def completeness_count(clust_summary: pl.DataFrame, threshold: float = 95.0) -> 
         int: The number of clusters with completeness above the threshold.
     """
     return clust_summary.filter(pl.col("family_completeness") >= threshold).shape[0]
-
-
-def param_sweep(
-    zone: int,
-    inc: str,
-    min_dist: float = 0.0006,
-    max_dist: float = 0.0020,
-    step: float = 0.0001,
-):
-    out = []
-
-    for dist in np.arange(min_dist, max_dist, step):
-        clusters = clustering.hierarchical_cluster_zone(
-            dist, zone=zone, inclination=inc
-        )
-        summary = clustering_summary(clusters, cluster_col="hierarchical_cluster")
-        res = {
-            "distance": dist,
-            "complete_and_pure": complete_and_pure_count(summary),
-            "complete": completeness_count(summary),
-            "avg_purity_complete": summary.filter(pl.col("family_completeness") >= 95)[
-                "cluster_purity"
-            ].mean(),
-            "clust_count": len(summary),
-        }
-        out.append(res)
-
-    sweep_df = pl.DataFrame(out)
-    plotting.plot_parameter_sweep(
-        sweep_df, f"Zone {zone} {inc.capitalize()} Parameter Sweep"
-    )
-    return sweep_df

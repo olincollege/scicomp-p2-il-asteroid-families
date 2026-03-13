@@ -1,6 +1,7 @@
 from typing import Literal, Optional
 
 import matplotlib.pyplot as plt
+import numpy as np
 import polars as pl
 from sklearn.cluster import AgglomerativeClustering
 
@@ -47,6 +48,38 @@ def hierarchical_cluster_zone(
     labels = hc.fit_predict(X)
 
     return zone_df.with_columns(pl.Series("hierarchical_cluster", labels))
+
+
+def param_sweep(
+    zone: int,
+    inc: str,
+    min_dist: float = 0.0006,
+    max_dist: float = 0.0020,
+    step: float = 0.0001,
+):
+    out = []
+
+    for dist in np.arange(min_dist, max_dist, step):
+        clusters = hierarchical_cluster_zone(dist, zone=zone, inclination=inc)
+        summary = scoring.clustering_summary(
+            clusters, cluster_col="hierarchical_cluster"
+        )
+        res = {
+            "distance": dist,
+            "complete_and_pure": scoring.complete_and_pure_count(summary),
+            "complete": scoring.completeness_count(summary),
+            "avg_purity_complete": summary.filter(pl.col("family_completeness") >= 95)[
+                "cluster_purity"
+            ].mean(),
+            "clust_count": len(summary),
+        }
+        out.append(res)
+
+    sweep_df = pl.DataFrame(out)
+    plotting.plot_parameter_sweep(
+        sweep_df, f"Zone {zone} {inc.capitalize()} Parameter Sweep"
+    )
+    return sweep_df
 
 
 def clustering_comparison(zone, inc, distance_threshold):
