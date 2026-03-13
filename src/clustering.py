@@ -1,3 +1,8 @@
+"""
+Hierarchical clustering functions for asteroid data, containing top level functions for
+testing and visualizing clustering results.
+"""
+
 from typing import Literal, Optional
 
 import matplotlib.pyplot as plt
@@ -24,9 +29,12 @@ def hierarchical_cluster_zone(
     Args:
         distance_threshold (float): The distance threshold for clustering.
         zone (int): The zone to filter asteroids by.
-        inclination (Literal["all", "low", "high"]): The inclination range to filter asteroids by.
-        sample_size (Optional[int]): The number of samples to randomly select for a quicker subset of clustering.
-        sample_seed (Optional[int]): The random seed for sampling, used if sample_size is provided.
+        inclination (Literal["all", "low", "high"]): The inclination range to filter
+            asteroids by.
+        sample_size (Optional[int]): The number of samples to randomly select for a
+            quicker subset of clustering.
+        sample_seed (Optional[int]): The random seed for sampling, used if sample_size
+            is provided.
 
     Returns:
         pl.DataFrame: A DataFrame containing zone data with an additional column for hierarchical cluster labels.
@@ -52,11 +60,25 @@ def hierarchical_cluster_zone(
 
 def param_sweep(
     zone: int,
-    inc: str,
-    min_dist: float = 0.0006,
-    max_dist: float = 0.0020,
-    step: float = 0.0001,
-):
+    inc: Literal["all", "low", "high"],
+    min_dist: float,
+    max_dist: float,
+    step: float,
+) -> pl.DataFrame:
+    """
+    Perform a parameter sweep over distance thresholds for hierarchical clustering.
+    Generates plot visualizing parameter sweep results.
+
+    Args:
+        zone (int): The zone to filter asteroids by.
+        inc (Literal["all", "low", "high"]): The inclination range to filter asteroids by.
+        min_dist (float): The minimum distance threshold to test.
+        max_dist (float): The maximum distance threshold to test.
+        step (float): The step size for distance thresholds to test.
+
+    Returns:
+        pl.DataFrame: A DataFrame summarizing the results of the parameter sweep
+    """
     out = []
 
     for dist in np.arange(min_dist, max_dist, step):
@@ -82,7 +104,22 @@ def param_sweep(
     return sweep_df
 
 
-def clustering_comparison(zone, inc, distance_threshold):
+def clustering_comparison(
+    zone: int, inc: Literal["all", "low", "high"], distance_threshold: float
+) -> pl.DataFrame:
+    """
+    Perform clustering on a zone, then plot the actual families and the hierarchical
+    clustering results side by side for comparison.
+
+    Args:
+        zone (int): The zone to filter asteroids by.
+        inc (Literal["all", "low", "high"]): The inclination range to filter asteroids by.
+        distance_threshold (float): The distance threshold to use for hierarchical clustering.
+
+    Returns:
+        pl.DataFrame: A DataFrame containing stats about complete clusters from
+            hierarchical clustering results.
+    """
     full = utils.load_full()
     zone_df = utils.filter_by_zone(full, zone=zone, inclination=inc)
     clusters = hierarchical_cluster_zone(distance_threshold, zone=zone, inclination=inc)
@@ -111,7 +148,10 @@ def clustering_comparison(zone, inc, distance_threshold):
     )
 
 
-def find_all_complete_clusters():
+def find_all_complete_clusters() -> pl.DataFrame:
+    """
+    Perform hierarchical clustering  on all zones, then plot all complete clusters.
+    """
     DIST_THRESHOLDS = {
         (1, "all"): 0.0021,
         (2, "low"): 0.0019,
@@ -148,4 +188,3 @@ def find_all_complete_clusters():
 
     combined = pl.concat(all_tagged)
     plotting.plot_complete_clusters(combined)
-    return combined
