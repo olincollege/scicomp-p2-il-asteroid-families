@@ -128,3 +128,46 @@ families, due to the distance threshold.
 Further discussion of the clustering can be found in `src/main.ipynb`.
 
 ## Results
+
+Across all zones, hierarchical clustering was able to find 30 complete clusters
+(>95% of the actual family in the cluster). Those 30 clusters had an average
+purity of 67.8% (on average, 67.8% of the cluster was the main family). Nine of
+these clusters had purity above 80% and 2 were able to meet the benchmark of 95%
+purity. The purity of the complete clusters was distributed like so:
+
+![](img/plots/purity_hist.png)
+
+Below are all 30 complete clusters, sorted by purity:
+
+| Family | Cluster Size | Completeness | Purity |
+| ------ | ------------ | ------------ | ------ |
+| 909    | 97           | 98.9         | 96.9   |
+| 480    | 4522         | 95.3         | 96.4   |
+| 396    | 1746         | 99.6         | 93.2   |
+| 1547   | 1975         | 98.5         | 89.1   |
+| 6124   | 152          | 95.1         | 88.8   |
+| 3815   | 2311         | 99.6         | 85.2   |
+| 618    | 658          | 99.3         | 85.1   |
+| 606    | 1378         | 100.0        | 84.2   |
+| 148    | 614          | 98.6         | 82.6   |
+| 1128   | 1136         | 95.1         | 77.4   |
+| 3330   | 4745         | 95.3         | 77.0   |
+| 18405  | 494          | 98.7         | 76.3   |
+| 1726   | 6081         | 98.0         | 75.1   |
+| 1222   | 749          | 99.5         | 72.9   |
+| 780    | 369          | 98.2         | 72.4   |
+| 1189   | 284          | 97.6         | 71.5   |
+| 778    | 3726         | 98.0         | 71.2   |
+| 1911   | 1573         | 99.0         | 68.9   |
+| 293    | 3069         | 99.0         | 65.5   |
+| 1303   | 1086         | 95.6         | 64.4   |
+| 302    | 830          | 100.0        | 59.8   |
+| 4      | 27492        | 97.2         | 58.6   |
+| 25     | 4899         | 96.0         | 53.9   |
+| 69559  | 272          | 100.0        | 51.5   |
+| 3      | 8781         | 97.2         | 48.0   |
+| 116763 | 219          | 95.0         | 43.4   |
+| 135    | 60648        | 98.4         | 40.4   |
+| 434    | 10874        | 97.0         | 36.6   |
+| 163    | 5692         | 98.8         | 28.6   |
+| 2076   | 11432        | 98.7         | 20.6   |
