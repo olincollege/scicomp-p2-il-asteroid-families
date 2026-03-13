@@ -110,6 +110,20 @@ hierarchical clustering.
 With the example of Zone 3 Low, a distance threshold of 0.0014 was chosen,
 sacrificing some cluster purity for a greater number of complete clusters found.
 
+The following distance thresholds were chosen for each zone:
+
+| Zone   | Sine of Inclination | Semimajor Axis Range | Distance Threshold |
+| ------ | ------------------- | -------------------- | ------------------ |
+| 1      | all                 | 1.600 - 2.000        | 0.0021             |
+| 2 low  | < 0.3               | 2.000 - 2.500        | 0.0019             |
+| 2 high | > 0.3               | 2.000 - 2.500        | 0.0050             |
+| 3 low  | < 0.3               | 2.500 - 2.825        | 0.0014             |
+| 3 high | > 0.3               | 2.500 - 2.825        | 0.0045             |
+| 4 low  | < 0.3               | 2.825 - 3.278        | 0.0016             |
+| 4 high | > 0.3               | 2.825 - 3.278        | 0.0030             |
+| 5      | all                 | 3.278 - 3.700        | 0.0045             |
+| 6      | all                 | 3.700 - 4.000        | 0.0018             |
+
 Further explanation of the choice of distance thresholds can be found in
 `src/parameter_sweep.ipynb`.
 
